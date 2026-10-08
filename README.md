@@ -33,8 +33,10 @@ Testando a partir de um clone local: `npx skills add . --list`.
 
 | Skill | Descrição |
 | ----- | --------- |
+| [`gut-bug-triage`](skills/gut-bug-triage/SKILL.md) | Classifica bugs e problemas pela matriz GUT, com critérios adaptados aos objetivos, requisitos e domínio do projeto, evidências, tratamento de incertezas e calculadora em Node puro. |
 | [`statusline`](skills/statusline/SKILL.md) | Status line do Claude Code em Node puro: diretório, branch, modelo, barra de contexto, custo e cotas de 5h/7d. Para você descobrir o quanto gastou antes que a fatura te conte. |
-| [`no-patience-dev-guidelines`](skills/no-patience-dev-guidelines/SKILL.md) | Diretrizes de comportamento para reduzir os erros clássicos de LLM em código: pensar antes de codar, simplicidade, mudanças cirúrgicas e execução orientada a objetivos. Ou: "para de inventar moda". |
+| [`no-patience-dev-guidelines`](skills/no-patience-dev-guidelines/SKILL.md) | Diretrizes de comportamento para reduzir os erros clássicos de LLM em código: pensar antes de codar, simplicidade, mudanças cirúrgicas, execução orientada a objetivos e comunicação sem afirmações vagas, com origem, responsáveis, motivos e evidências. Ou: "para de inventar moda". |
+| [`orca-layout`](skills/orca-layout/SKILL.md) | Abre no Orca um grid de terminais, um por projeto, a partir de um `.orca/layouts/<nome>.layout.json` e sobe tudo em modo dev (macOS, Linux e Windows, em Node puro). Repo sem layout? Ela analisa o código e sugere um. Para você parar de abrir quatro terminais na mão toda manhã. |
 
 ## Adicionando uma skill
 

@@ -1,8 +1,8 @@
 ---
 name: no-patience-dev-guidelines
-description: Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria.
+description: Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, reviewing, or refactoring code and reporting progress or results to avoid overcomplication, make surgical changes, surface assumptions, define verifiable success criteria, and communicate actions with clear attribution and evidence.
 metadata:
-  version: '1.0.0'
+  version: '1.1.0'
   source: 'Karpathy Guidelines'
 ---
 
@@ -71,3 +71,29 @@ For multi-step tasks, state a brief plan:
 ```
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+## 5. Never Make Vague Claims
+
+**Every claim must make its meaning, source, and basis clear. Never hide missing facts behind vague wording.**
+
+This is a project-wide rule, not a rule limited to hooks, tools, or subagents. It applies to every claim about code, architecture, dependencies, configuration, requirements, decisions, changes, defects, causes, tests, environments, deployments, data, actions, and results. Apply it in questions, plans, progress updates, explanations, handoffs, and final reports.
+
+For each claim, provide the applicable details:
+
+- **What and where:** identify the exact subject and scope using names, paths, symbols, keys, versions, environments, or other relevant identifiers. "The system", "a configuration", or "some tests" cannot substitute for identifying the subject.
+- **Source and evidence:** identify the code, requirement, decision record, documentation, log, tool output, or other source supporting the statement. Qualify conclusions to match the evidence: passing named tests does not establish that the entire project works.
+- **Why and how:** explain the relevant reason, trigger, mechanism, or rationale. For causes, distinguish an observed causal relationship from a hypothesis; for decisions, cite the requirement or tradeoff that motivates them.
+- **Who and responsibility, when an actor is involved:** identify the person, agent, subagent, service, or process responsible and its assigned task or role. Explain what it was doing when the action occurred. Distinguish deliberate execution from an automatic side effect.
+- **Status and outcome, when reporting work:** distinguish proposed, requested, started, completed, and verified work. State the observed result and any limits of verification. A triggered hook does not prove that its build succeeded.
+
+For delegated work, obtain these details from the subagent's report or execution evidence before attributing actions to it. Distinguish your own observations from a subagent's report and from inference; do not present an inferred motive as a confirmed fact.
+
+If a detail is unknown, inspect the relevant evidence when available. If it remains unknown, state exactly what could not be established and what is actually known. Never invent a name, responsibility, motive, or result to make a report sound complete.
+
+**Unacceptable:** "I haven't run dotnet directly, but a project hook that runs dotnet build was triggered by subagents."
+
+**Illustrative rewrite, only if supported by evidence:** "Subagent `api-validation`, assigned to validate the API changes, ran `git commit` to record those changes. That command automatically triggered `.husky/pre-commit`, which invokes `dotnet build Api.sln`. The subagent's tool output shows the build exited with code 0. I did not invoke `dotnet` myself."
+
+Other unacceptable claims include "the configuration is wrong", "there is a problem in the backend", "tests passed", and "this is the project's standard" without identifying the configuration key and expected value, affected component and observed failure, tests and execution results, or source establishing the standard, respectively.
+
+Before sending any communication, check whether the reader can identify the subject, scope, source, evidence, and relevant rationale without asking follow-up questions. For actions, also check the actor, responsibility, trigger, and outcome. Include the details relevant to the claim; keep the explanation concise.
