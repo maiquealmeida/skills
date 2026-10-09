@@ -1,5 +1,13 @@
 # orca-layout
 
+## O que é o Orca
+
+O [Orca](https://www.onorca.dev/) é um ambiente de desenvolvimento para agentes: um aplicativo de desktop, livre e de código aberto, feito para rodar vários agentes de código ao mesmo tempo. Cada tarefa ganha o próprio git worktree, o próprio terminal de agente e a própria aba de navegador. Dá para espalhar o mesmo trabalho entre Claude Code, Codex, Cursor CLI e outros agentes de linha de comando sem stash, sem ficar trocando de branch e sem um agente pisar no arquivo do outro.
+
+O Orca não é um modelo e não substitui o git. Você continua usando a assinatura que já tem, e cada worktree continua sendo um worktree de git de verdade. O que ele reúne num só app são os worktrees, os terminais (com abas e panes lado a lado), os diffs, um navegador Chromium embutido e o CLI `orca`, pelo qual scripts e agentes comandam o editor. Roda em macOS, Windows e Linux. A apresentação de um minuto está em [What is Orca?](https://www.onorca.dev/docs).
+
+Esta skill usa esse terminal e esse CLI: abre uma aba, divide os panes e sobe cada projeto em modo de desenvolvimento.
+
 > Abre no [Orca](https://www.onorca.dev) uma aba com um grid de terminais, um pane por projeto, e já inicia cada projeto em modo de desenvolvimento. Para você parar de abrir quatro terminais na mão toda manhã.
 
 O grid vem de um arquivo JSON que mora no próprio repositório (`.orca/layouts/<nome>.layout.json`), então a mesma skill serve para qualquer projeto e qualquer máquina. É Node puro, sem dependências, e roda em macOS, Linux e Windows.
@@ -8,16 +16,17 @@ Este README é para quem usa e mantém a skill. As instruções para o agente es
 
 ## Sumário
 
-1. [Requisitos e instalação](#requisitos-e-instalação)
-2. [Início rápido](#início-rápido)
-3. [Como funciona](#como-funciona)
-4. [Comandos e opções](#comandos-e-opções)
-5. [O arquivo `*.layout.json`](#o-arquivo-layoutjson)
-6. [Confiança e segurança](#confiança-e-segurança)
-7. [Windows e outras plataformas](#windows-e-outras-plataformas)
-8. [Problemas comuns](#problemas-comuns)
-9. [Uso pelo agente (a skill)](#uso-pelo-agente-a-skill)
-10. [Estrutura do código e testes](#estrutura-do-código-e-testes)
+1. [O que é o Orca](#o-que-é-o-orca)
+2. [Requisitos e instalação](#requisitos-e-instalação)
+3. [Início rápido](#início-rápido)
+4. [Como funciona](#como-funciona)
+5. [Comandos e opções](#comandos-e-opções)
+6. [O arquivo `*.layout.json`](#o-arquivo-layoutjson)
+7. [Confiança e segurança](#confiança-e-segurança)
+8. [Windows e outras plataformas](#windows-e-outras-plataformas)
+9. [Problemas comuns](#problemas-comuns)
+10. [Uso pelo agente (a skill)](#uso-pelo-agente-a-skill)
+11. [Estrutura do código e testes](#estrutura-do-código-e-testes)
 
 ## Requisitos e instalação
 
