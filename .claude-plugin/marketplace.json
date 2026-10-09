@@ -1,0 +1,12 @@
+{
+  "name": "maiquealmeida-skills",
+  "owner": { "name": "Maique Almeida" },
+  "description": "Minha coleção pessoal de plugins para o Claude Code. As skills do repositório se instalam pelo skills CLI.",
+  "plugins": [
+    {
+      "name": "boletim-do-claude",
+      "source": "./plugins/boletim-do-claude",
+      "description": "Dá nota a cada resposta do Claude com o Jev da TypeSafe e sugere regras para o CLAUDE.md."
+    }
+  ]
+}

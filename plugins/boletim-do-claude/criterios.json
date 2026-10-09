@@ -1,0 +1,73 @@
+{
+  "_como_editar": {
+    "arquivo": "Este arquivo é lido de novo a cada turno: salve e o próximo boletim já usa a mudança, sem reiniciar. Campos que começam com _ são só comentário e o mod ignora.",
+    "criterios": "A lista de critérios. Cada item vira uma pergunta para o Jev e uma linha no boletim. Lista vazia, ou JSON quebrado, deixa o turno sem nota (o motivo vai para o log de debug).",
+    "nome": "Nome curto do critério. Aparece no painel e na linha 'melhorar: ...'. Obrigatório.",
+    "pergunta": "O que o Jev deve responder sobre o turno, em uma frase. Obrigatório.",
+    "regra": "A instrução que o /melhorar grava no CLAUDE.md quando o critério não fica em ótimo. Escreva como uma ordem para o Claude. Obrigatório.",
+    "degraus": "Opcional. O que é fraco, ok e ótimo, com fatos que dá para ver no turno (pedido, arquivos, comandos, resposta). Sem degraus, ou sem algum deles, o Jev usa um texto genérico no lugar.",
+    "ignorados": "Um critério sem nome, pergunta ou regra é ignorado, sem aviso."
+  },
+  "criterios": [
+    {
+      "nome": "Resumo final",
+      "pergunta": "Disse o que mudou e em quais arquivos?",
+      "regra": "Ao terminar, resuma em poucas linhas o que mudou e em quais arquivos.",
+      "degraus": {
+        "fraco": "Não diz o que mudou nem em quais arquivos: só 'pronto', 'feito' ou uma conversa genérica que não permite saber o que aconteceu.",
+        "ok": "Diz o que mudou ou em quais arquivos, mas falta a outra metade; ou o resumo existe, mas é longo demais ou confuso para ler de relance.",
+        "ótimo": "Em poucas linhas diz o que mudou e cita os arquivos principais, de modo que dá para entender a mudança sem abrir o código."
+      }
+    },
+    {
+      "nome": "Como conferir",
+      "pergunta": "Disse qual página abrir e o que clicar?",
+      "regra": "Ao terminar, diga como eu confiro na tela: qual página abrir e o que fazer.",
+      "degraus": {
+        "fraco": "Não diz como conferir; o usuário teria que descobrir sozinho onde olhar e o que testar.",
+        "ok": "Diz onde olhar (a página, a rota ou o comando), mas não diz o que fazer nem o que deve aparecer quando está certo.",
+        "ótimo": "Diz qual página abrir, o que clicar ou digitar e o que deve aparecer na tela; se a mudança não tem tela, diz qual comando rodar e qual saída esperar."
+      }
+    },
+    {
+      "nome": "Prova",
+      "pergunta": "Rodou testes ou abriu a página (veja `comandos`) e disse o resultado?",
+      "regra": "Antes de dizer que terminou, rode os testes e diga o resultado.",
+      "degraus": {
+        "fraco": "Nenhum comando de teste, tipagem, lint ou build aparece em comandos, e a resposta afirma que funciona sem mostrar nenhuma prova.",
+        "ok": "Rodou alguma verificação (teste, tipagem, lint, build ou abrir a página), mas a resposta não diz o resultado; ou a verificação falhou e a resposta não explica o que fazer com isso.",
+        "ótimo": "Rodou testes ou abriu a página (há um comando de teste que deu certo em comandos) e a resposta diz o resultado, por exemplo quantos testes passaram, de forma coerente com o que comandos mostra."
+      }
+    },
+    {
+      "nome": "Suposições",
+      "pergunta": "Avisou o que decidiu sozinho?",
+      "regra": "Quando decidir algo que eu não especifiquei, avise no final o que decidiu.",
+      "degraus": {
+        "fraco": "Tomou decisões que o pedido não cobria (nomes, escolhas de design, escopo, valores padrão) e não avisou, ou escondeu uma suposição importante.",
+        "ok": "Avisou algumas decisões, mas deixou passar outras relevantes, ou avisou de forma vaga, sem dizer o que foi escolhido.",
+        "ótimo": "Listou com clareza o que decidiu por conta própria, ou deixou claro que não precisou decidir nada além do que o pedido dizia."
+      }
+    },
+    {
+      "nome": "Tamanho da mudança",
+      "pergunta": "Mexeu só no que o pedido exigia?",
+      "regra": "Mexa só no que o pedido exige; se achar outra melhoria, sugira em vez de fazer.",
+      "degraus": {
+        "fraco": "Alterou arquivos ou comportamentos que o pedido não exigia (refatorou, renomeou, reformatou, mexeu em outras áreas) sem que ninguém pedisse.",
+        "ok": "A maior parte da mudança é o que foi pedido, mas tocou em alguns arquivos ou detalhes a mais, sem avisar ou sem necessidade clara.",
+        "ótimo": "Todos os arquivos alterados fazem sentido para o pedido e as melhorias extras foram sugeridas na resposta em vez de feitas."
+      }
+    },
+    {
+      "nome": "Próximo passo",
+      "pergunta": "Sugeriu um próximo passo concreto?",
+      "regra": "Termine sugerindo um próximo passo que faça sentido.",
+      "degraus": {
+        "fraco": "Termina sem sugerir nada, ou só com uma frase vaga como 'me avise se precisar de algo'.",
+        "ok": "Sugere um próximo passo, mas genérico ou pouco ligado ao que acabou de ser feito.",
+        "ótimo": "Termina com um próximo passo concreto e coerente com o trabalho feito, por exemplo o que testar, revisar ou fazer em seguida."
+      }
+    }
+  ]
+}

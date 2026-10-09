@@ -1,0 +1,11 @@
+{
+  "name": "boletim-do-claude",
+  "version": "0.1.0",
+  "description": "Dá nota a cada resposta do Claude com o Jev da TypeSafe e sugere regras para o CLAUDE.md.",
+  "author": {
+    "name": "Maique Almeida"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/maiquealmeida/skills",
+  "types": "./types/index.d.ts"
+}

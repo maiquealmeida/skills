@@ -12,7 +12,7 @@ Dito isso, vamos ao que interessa.
 
 ## O que é isso aqui?
 
-Minha coleção pessoal de skills para Claude Code e outros agentes de código, instaláveis com o [skills CLI](https://github.com/vercel-labs/skills). É basicamente uma gaveta de instruções para convencer a IA a se comportar. Funciona na maior parte do tempo.
+Minha coleção pessoal de skills para Claude Code e outros agentes de código, instaláveis com o [skills CLI](https://github.com/vercel-labs/skills). É basicamente uma gaveta de instruções para convencer a IA a se comportar. Funciona na maior parte do tempo. Tem também uma gaveta de plugins do Claude Code, para quando convencer não basta e é preciso pôr código no meio do caminho.
 
 ## Instalação
 
@@ -35,12 +35,31 @@ Testando a partir de um clone local: `npx skills add . --list`.
 | ----- | --------- |
 | [`gut-bug-triage`](skills/gut-bug-triage/SKILL.md) | Classifica bugs e problemas pela matriz GUT, com critérios adaptados aos objetivos, requisitos e domínio do projeto, evidências, tratamento de incertezas e calculadora em Node puro. |
 | [`statusline`](skills/statusline/SKILL.md) | Status line do Claude Code em Node puro: diretório, branch, modelo, barra de contexto, custo e cotas de 5h/7d. Para você descobrir o quanto gastou antes que a fatura te conte. |
-| [`no-patience-dev-guidelines`](skills/no-patience-dev-guidelines/SKILL.md) | Diretrizes de comportamento para reduzir os erros clássicos de LLM em código: pensar antes de codar, simplicidade, mudanças cirúrgicas, execução orientada a objetivos e comunicação sem afirmações vagas, com origem, responsáveis, motivos e evidências. Ou: "para de inventar moda". |
+| [`no-patience-dev-guidelines`](skills/no-patience-dev-guidelines/SKILL.md) | Diretrizes para agentes de código: respeitar o contexto do projeto, simplificar, fazer mudanças cirúrgicas, diagnosticar antes de corrigir, verificar o comportamento solicitado, revisar o próprio trabalho, preservar decisões e comunicar com origem, responsáveis, motivos e evidências. Ou: "para de inventar moda". |
 | [`orca-layout`](skills/orca-layout/SKILL.md) | Abre no Orca um grid de terminais, um por projeto, a partir de um `.orca/layouts/<nome>.layout.json` e sobe tudo em modo dev (macOS, Linux e Windows, em Node puro). Repo sem layout? Ela analisa o código e sugere um. Para você parar de abrir quatro terminais na mão toda manhã. |
+
+## Plugins
+
+Plugins do Claude Code, instaláveis pelo marketplace deste repositório. A skill pede com educação; o plugin entra no caminho e faz.
+
+```text
+# Dentro do Claude Code
+/plugin install boletim-do-claude --marketplace maiquealmeida/skills
+```
+
+Testando a partir de um clone local: `claude --plugin-dir plugins/boletim-do-claude`.
+
+| Plugin | Descrição |
+| ------ | --------- |
+| [`boletim-do-claude`](plugins/boletim-do-claude/README.md) | Dá nota a cada resposta do Claude com o [Jev](https://docs.typesafe.ai) da TypeSafe (resumo, como conferir, prova, suposições, tamanho da mudança e próximo passo), mostra o boletim num painel e, com `/melhorar`, grava no `CLAUDE.md` as regras que faltaram. Para você descobrir que o Claude esqueceu de testar antes de o deploy te contar. |
 
 ## Adicionando uma skill
 
 Veja o [AGENTS.md](AGENTS.md). Spoiler: é uma pasta com um `SKILL.md`. Não tem mágica, só YAML.
+
+## Adicionando um plugin
+
+Também no [AGENTS.md](AGENTS.md). Aqui tem um pouco mais de mágica: uma pasta com um `plugin.json`, um módulo de hooks e testes.
 
 ## Licença
 
