@@ -23,7 +23,7 @@ Local testing from a clone: `npx skills add . --list`.
 
 | Skill | Description |
 | ----- | ----------- |
-| [`session-handoff`](skills/session-handoff/SKILL.md) | Creates or resumes session handoffs with continuity and verification agents: no arguments creates a handoff; a filename resumes work, using the project-configured directory. |
+| [`session-handoff`](skills/session-handoff/SKILL.md) | Creates or resumes session handoffs with continuity and verification agents: no arguments updates the active handoff or creates one; `--create` selects creation, `--update name` updates, and a filename resumes work, using the project-configured directory; `--prepare` drafts in the background when supported. |
 | [`gut-bug-triage`](skills/gut-bug-triage/SKILL.md) | Classifies bugs and software problems using GUT, with criteria calibrated to project goals, requirements and domain, evidence, uncertainty handling and a dependency-free Node calculator. |
 | [`statusline`](skills/statusline/SKILL.md) | Custom Claude Code status line in plain Node: directory, branch, model, context bar, cost and 5h/7d quotas. |
 | [`no-patience-dev-guidelines`](skills/no-patience-dev-guidelines/SKILL.md) | Guidelines for coding agents: respect project context, simplify, make surgical changes, diagnose before patching, verify requested behavior, review your own work, preserve decisions, and report with sources, responsible actors, reasons, and evidence. |

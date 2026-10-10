@@ -1,6 +1,18 @@
 # Resolução de diretório e arquivo
 
-O argumento da skill é um único nome de arquivo, não um tema para pesquisa livre nem um comando. Exemplos: `$session-handoff` cria; `$session-handoff runpod-falhas-intermitentes` ou `$session-handoff runpod-falhas-intermitentes.md` retoma. Para um nome com espaços, trate a expressão citada como um único nome.
+A skill interpreta os modos antes de chamar o helper:
+
+| Invocação | Ação |
+| --- | --- |
+| `$session-handoff` | Atualizar o único ativo; criar se nenhum; perguntar se vários ou identificação incerta. |
+| `$session-handoff --prepare` | Preparar proposta, em segundo plano se disponível; não gravar nem retomar trabalho. |
+| `$session-handoff --create` | Selecionar criação explicitamente, delimitando assuntos e respeitando arquivos existentes. |
+| `$session-handoff --update runpod-falhas-intermitentes` | Atualizar o arquivo indicado e encerrar. |
+| `$session-handoff runpod-falhas-intermitentes.md` | Ler e continuar o trabalho autorizado. |
+
+O nome pode ter ou não extensão; um nome com espaços deve ser tratado como um argumento citado. Ele não é tema de pesquisa livre nem comando. `--update` exige um nome; `--create` e `--prepare` não recebem nome; opções desconhecidas ou modos combinados exigem correção, sem executar outro modo por aproximação. O pedido explícito em linguagem natural tem precedência sobre o modo padrão.
+
+O helper resolve somente diretório/arquivo: não aceita `--create`/`--update`/`--prepare`, não detecta handoff ativo e não acessa o histórico da conversa. O principal usa o nome extraído do modo explícito ou do registro ativo. Não passar as opções da skill ao helper.
 
 Configuração opcional na raiz do projeto:
 
@@ -20,7 +32,7 @@ uv run --with pyyaml python <skill>/scripts/resolve_handoff.py --root <projeto>
 uv run --with pyyaml python <skill>/scripts/resolve_handoff.py --root <projeto> nome-do-arquivo
 ```
 
-Sem nome, retorna diretório e fonte da configuração para a criação, sem gravar nada. Com nome, retorna caminho real e SHA-256 do arquivo existente para leitura/conferência, sem executar seu conteúdo. Não abre credenciais nem lê outros arquivos do projeto. Não carregar todos os candidatos só para escolher um.
+Sem nome, retorna diretório e fonte da configuração para a criação, sem gravar nada; isso não determina o modo da skill. Com nome, retorna caminho real e SHA-256 do arquivo existente para leitura/conferência, sem executar seu conteúdo. Não abre credenciais nem lê outros arquivos do projeto. Não carregar todos os candidatos só para escolher um.
 
 - Argumento com extensão: correspondência exata.
 - Sem extensão: considerar o nome exato e o mesmo nome com `.md`. Se ambos existirem, é ambíguo; perguntar qual usar. Não pesquisar recursivamente nem aceitar `../`, caminho absoluto ou separadores no nome.
