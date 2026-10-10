@@ -1,6 +1,6 @@
 {
   "name": "boletim-do-claude",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Dá nota a cada resposta do Claude com o Jev da TypeSafe e sugere regras para o CLAUDE.md.",
   "author": {
     "name": "Maique Almeida"

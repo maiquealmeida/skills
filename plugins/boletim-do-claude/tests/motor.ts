@@ -18,6 +18,7 @@ export const HOME = '/home/maique'
 export const ARQUIVO_ENV = `${HOME}/.env.local`
 export const ARQUIVO_ENV_DO_PROJETO = `${RAIZ}/.env.local`
 export const ARQUIVO_CLAUDE = `${RAIZ}/CLAUDE.md`
+export const ARQUIVO_AGENTS = `${RAIZ}/AGENTS.md`
 
 export const REGRAS = {
   resumo: 'Ao terminar, resuma em poucas linhas o que mudou e em quais arquivos.',
@@ -107,6 +108,8 @@ export type OpcoesDoMotor = {
   variaveis?: Readonly<Record<string, string>>
   /** Conteúdo do CLAUDE.md; ausente = o arquivo não existe. */
   claude?: string
+  /** Conteúdo do AGENTS.md; ausente = o arquivo não existe. */
+  agents?: string
   store?: Readonly<Record<string, unknown>>
   temEspaco?: boolean
   latenciaDoJevMs?: number
@@ -176,6 +179,7 @@ export function criarMotor(on: On, opcoes: OpcoesDoMotor = {}): Motor {
   const env = opcoes.env === undefined ? ENV_COM_CHAVE : opcoes.env
   if (env !== null) arquivos.set(ARQUIVO_ENV, env)
   if (opcoes.claude !== undefined) arquivos.set(ARQUIVO_CLAUDE, opcoes.claude)
+  if (opcoes.agents !== undefined) arquivos.set(ARQUIVO_AGENTS, opcoes.agents)
 
   mock.env(on, opcoes.variaveis ?? { HOME })
   on('session.root', () => ({ value: RAIZ_COM_BARRA_INVERTIDA }))

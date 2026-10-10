@@ -29,7 +29,7 @@ Where the report shows up:
 | Command | What it does |
 | --- | --- |
 | `/boletim` | Opens the panel with the last turn's report. |
-| `/melhorar` | Writes the improvement points' rules to the root `CLAUDE.md`, under `## Regras do boletim`, without duplicates. |
+| `/melhorar` | Writes the improvement points' rules to the root `CLAUDE.md`, under `## Regras do boletim`, without duplicates. In a project with an `AGENTS.md` and no `CLAUDE.md`, it writes to `AGENTS.md`: a new `CLAUDE.md` would make Claude Code stop reading the `AGENTS.md` files. |
 
 All the plugin's text is in Brazilian Portuguese.
 

@@ -1,8 +1,9 @@
-// /melhorar: grava no CLAUDE.md da raiz as regras dos pontos de melhoria do último turno.
+// /melhorar: grava no CLAUDE.md da raiz (ou no AGENTS.md, quando o projeto só tem ele) as
+// regras dos pontos de melhoria do último turno.
 import { describe, expect, test } from 'claude-code/testing'
 
 import { iniciarSessao, rodarComando, rodarTurno } from './fluxo'
-import { ARQUIVO_CLAUDE, criarMotor, REGRAS } from './motor'
+import { ARQUIVO_AGENTS, ARQUIVO_CLAUDE, criarMotor, REGRAS } from './motor'
 
 const NOTAS_7_3 = [2, 1, 0, 2, 1, 2]
 // Os dois pontos de melhoria de NOTAS_7_3, do mais baixo para o mais alto.
@@ -102,6 +103,69 @@ describe('/melhorar grava as regras', () => {
     await melhorar($)
 
     expect([...motor.arquivos.keys()].filter(caminho => caminho.endsWith('CLAUDE.md'))).toEqual(['C:/repo/CLAUDE.md'])
+  })
+})
+
+describe('/melhorar num projeto que usa AGENTS.md', () => {
+  test('sem CLAUDE.md, grava no AGENTS.md e não cria o CLAUDE.md', async ($, on) => {
+    const existente = `# Projeto\n\n## Regras do boletim\n\n- Uma regra antiga.\n`
+    const motor = criarMotor(on, { agents: existente })
+    motor.responderJev({ tipo: 'notas', scores: NOTAS_7_3 })
+    await iniciarSessao($)
+    await rodarTurno($, motor, { id: 't1' })
+
+    const resposta = await melhorar($)
+
+    expect(resposta).toBe(`Gravei no AGENTS.md estas 2 regras:\n- ${PROVA}\n- ${CONFERIR}`)
+    expect(motor.arquivos.get(ARQUIVO_AGENTS)).toBe(`${existente}- ${PROVA}\n- ${CONFERIR}\n`)
+    expect(motor.arquivos.has(ARQUIVO_CLAUDE)).toBe(false)
+  })
+
+  test('com CLAUDE.md e AGENTS.md, grava no CLAUDE.md, que é o que o Claude Code lê', async ($, on) => {
+    const motor = criarMotor(on, { claude: '# Projeto\n', agents: '# Agentes\n' })
+    motor.responderJev({ tipo: 'notas', scores: NOTAS_7_3 })
+    await iniciarSessao($)
+    await rodarTurno($, motor, { id: 't1' })
+
+    const resposta = await melhorar($)
+
+    expect(resposta).toBe(`Gravei no CLAUDE.md estas 2 regras:\n- ${PROVA}\n- ${CONFERIR}`)
+    expect(motor.arquivos.get(ARQUIVO_CLAUDE)).toBe(`# Projeto\n\n## Regras do boletim\n\n- ${PROVA}\n- ${CONFERIR}\n`)
+    expect(motor.arquivos.get(ARQUIVO_AGENTS)).toBe('# Agentes\n')
+  })
+
+  test('regras que já estão no AGENTS.md: avisa citando o AGENTS.md', async ($, on) => {
+    const existente = `## Regras do boletim\n\n- ${PROVA}\n- ${CONFERIR}\n`
+    const motor = criarMotor(on, { agents: existente })
+    motor.responderJev({ tipo: 'notas', scores: NOTAS_7_3 })
+    await iniciarSessao($)
+    await rodarTurno($, motor, { id: 't1' })
+
+    expect(await melhorar($)).toBe(`As regras "${PROVA}", "${CONFERIR}" já estão no AGENTS.md. Nada mudou.`)
+    expect(motor.arquivos.get(ARQUIVO_AGENTS)).toBe(existente)
+    expect(motor.arquivos.has(ARQUIVO_CLAUDE)).toBe(false)
+  })
+
+  test('turno sem ponto de melhoria: o aviso cita o AGENTS.md', async ($, on) => {
+    const motor = criarMotor(on, { agents: '# Agentes\n' })
+    await iniciarSessao($)
+    await rodarTurno($, motor, { id: 't1' })
+
+    expect(await melhorar($)).toBe(
+      'Nenhum ponto de melhoria no último turno (nota 10,0). O AGENTS.md ficou como estava.',
+    )
+  })
+
+  test('se não conseguir gravar no AGENTS.md, o aviso cita o AGENTS.md', async ($, on) => {
+    const motor = criarMotor(on, { agents: '# Agentes\n' })
+    motor.responderJev({ tipo: 'notas', scores: NOTAS_7_3 })
+    await iniciarSessao($)
+    await rodarTurno($, motor, { id: 't1' })
+    motor.falharEscrita(true)
+
+    expect(await melhorar($)).toBe('Não consegui gravar no AGENTS.md (detalhe no log de debug).')
+    expect(motor.arquivos.get(ARQUIVO_AGENTS)).toBe('# Agentes\n')
+    expect(motor.arquivos.has(ARQUIVO_CLAUDE)).toBe(false)
   })
 })
 

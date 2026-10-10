@@ -9,6 +9,7 @@ import {
   acrescentarNota,
   aplicarRegistro,
   avaliacaoPronta,
+  escolherArquivoDeRegras,
   esconder,
   incluirRegras,
   iniciarTurno,
@@ -28,12 +29,11 @@ import {
   TURNO_VAZIO,
   URL_DO_JEV,
 } from './jev'
-import type { Linha, Retrato, TomDaLinha, Trecho } from './jev'
+import type { ArquivoDeRegras, Linha, Retrato, TomDaLinha, Trecho } from './jev'
 
 const ID_DO_PAINEL = 'boletim-do-claude'
 const TITULO_DO_PAINEL = 'Boletim do Claude'
 const ARQUIVO_DE_CHAVES = '.env.local'
-const ARQUIVO_DE_REGRAS = 'CLAUDE.md'
 const ARQUIVO_DE_CRITERIOS = 'criterios.json'
 const CHAVE_DO_HISTORICO = 'historico'
 const MAX_CORPO_NO_LOG = 300
@@ -149,19 +149,32 @@ async function limparAvaliacaoPerdida($: EngineInterface): Promise<void> {
   await update($, avaliacao, atual => (atual?.estado === 'avaliando' ? null : atual))
 }
 
+/** O arquivo de regras da raiz do projeto; a escolha está em `escolherArquivoDeRegras`. */
+async function arquivoDeRegras($: EngineInterface): Promise<{ nome: ArquivoDeRegras; caminho: string }> {
+  const raiz = barras(await $.session.root())
+  const nome = escolherArquivoDeRegras({
+    claude: await $.fs.exists(`${raiz}/CLAUDE.md`),
+    agents: await $.fs.exists(`${raiz}/AGENTS.md`),
+  })
+  return { nome, caminho: `${raiz}/${nome}` }
+}
+
 async function gravarRegras($: EngineInterface): Promise<string> {
-  const plano = planejarMelhorar(await read($, avaliacao))
-  if (plano.tipo === 'aviso') return plano.texto
+  const ultima = await read($, avaliacao)
+  let nome: ArquivoDeRegras = 'CLAUDE.md'
   try {
-    const caminho = `${barras(await $.session.root())}/${ARQUIVO_DE_REGRAS}`
-    const conteudo = (await $.fs.exists(caminho)) ? await $.fs.read(caminho) : ''
+    const arquivo = await arquivoDeRegras($)
+    nome = arquivo.nome
+    const plano = planejarMelhorar(ultima, nome)
+    if (plano.tipo === 'aviso') return plano.texto
+    const conteudo = (await $.fs.exists(arquivo.caminho)) ? await $.fs.read(arquivo.caminho) : ''
     const incluidas = incluirRegras(conteudo, plano.regras)
-    if (incluidas.adicionadas.length === 0) return textoRegrasJaExistem(plano.regras)
-    await $.fs.write(caminho, incluidas.conteudo)
-    return textoRegrasGravadas(incluidas.adicionadas, incluidas.jaExistiam)
+    if (incluidas.adicionadas.length === 0) return textoRegrasJaExistem(plano.regras, nome)
+    await $.fs.write(arquivo.caminho, incluidas.conteudo)
+    return textoRegrasGravadas(incluidas.adicionadas, incluidas.jaExistiam, nome)
   } catch (erro) {
     depurar($, `/melhorar: ${mensagemDe(erro)}`)
-    return 'Não consegui gravar no CLAUDE.md (detalhe no log de debug).'
+    return `Não consegui gravar no ${nome} (detalhe no log de debug).`
   }
 }
 
@@ -216,7 +229,7 @@ export const register: Register = on => {
     await protegido($, 'comando /melhorar', () =>
       $.command.register({
         name: 'melhorar',
-        description: 'Grava no CLAUDE.md as regras sugeridas pelo último boletim',
+        description: 'Grava no CLAUDE.md (ou no AGENTS.md, se o projeto só tem ele) as regras sugeridas pelo último boletim',
       }),
     )
     await protegido($, 'histórico', () => recuperarHistorico($))

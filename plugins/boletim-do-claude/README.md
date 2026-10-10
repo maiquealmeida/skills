@@ -29,7 +29,7 @@ Onde o boletim aparece:
 | Comando | O que faz |
 | --- | --- |
 | `/boletim` | Abre o painel com o boletim do último turno. |
-| `/melhorar` | Grava no `CLAUDE.md` da raiz as regras dos pontos de melhoria, na seção `## Regras do boletim`, sem duplicar. |
+| `/melhorar` | Grava no `CLAUDE.md` da raiz as regras dos pontos de melhoria, na seção `## Regras do boletim`, sem duplicar. Num projeto sem `CLAUDE.md` e com `AGENTS.md`, grava no `AGENTS.md`: um `CLAUDE.md` novo faria o Claude Code parar de ler os `AGENTS.md`. |
 
 ## Requisitos
 

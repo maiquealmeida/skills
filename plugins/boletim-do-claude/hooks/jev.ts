@@ -56,6 +56,9 @@ export type Registro = { arquivo: string } | { comando: Comando }
 /** O que o /melhorar faz: avisa que não há o que gravar, ou grava estas regras. */
 export type Plano = { tipo: 'aviso'; texto: string } | { tipo: 'regras'; regras: string[] }
 
+/** Onde o /melhorar grava, na raiz do projeto. */
+export type ArquivoDeRegras = 'CLAUDE.md' | 'AGENTS.md'
+
 export type RegrasIncluidas = {
   conteudo: string
   adicionadas: string[]
@@ -454,7 +457,16 @@ export function aplicarRegistro(turno: Turno, registro: Registro): Turno {
   return { ...turno, arquivos: [...turno.arquivos, registro.arquivo].slice(-MAX_GUARDADOS) }
 }
 
-// ── /melhorar: regras no CLAUDE.md ──────────────────────────────────────────
+// ── /melhorar: regras no CLAUDE.md ou no AGENTS.md ──────────────────────────
+
+/**
+ * O `CLAUDE.md` quando ele existe. Sem ele, o `AGENTS.md` que já existir: o Claude Code
+ * só lê os `AGENTS.md` enquanto o projeto não tem `CLAUDE.md`, então criar um calaria
+ * todos eles. Sem nenhum dos dois, o `CLAUDE.md` nasce.
+ */
+export function escolherArquivoDeRegras(existe: { claude: boolean; agents: boolean }): ArquivoDeRegras {
+  return !existe.claude && existe.agents ? 'AGENTS.md' : 'CLAUDE.md'
+}
 
 /** Espaços viram um só e maiúsculas somem: é assim que duas regras são comparadas. */
 export const normalizar = (texto: string): string => texto.replace(/\s+/g, ' ').trim().toLowerCase()
@@ -494,7 +506,7 @@ function inserirNaSecao(linhas: readonly string[], cabecalho: number, regras: re
 }
 
 /**
- * Põe as regras que ainda não estão no CLAUDE.md na seção "## Regras do boletim",
+ * Põe as regras que ainda não estão no arquivo de regras na seção "## Regras do boletim",
  * no fim dela. Cria a seção (e o arquivo, se `conteudo` for vazio) quando falta e
  * mantém CRLF se o arquivo usa CRLF.
  */
@@ -523,44 +535,48 @@ export function incluirRegras(conteudo: string, regras: readonly string[]): Regr
 const AVISO_SEM_BOLETIM = 'Ainda não tem boletim de um turno pra usar.'
 
 /** Decide o que o /melhorar faz com a avaliação do último turno. */
-export function planejarMelhorar(avaliacao: Avaliacao | null): Plano {
+export function planejarMelhorar(avaliacao: Avaliacao | null, arquivo: ArquivoDeRegras = 'CLAUDE.md'): Plano {
   if (avaliacao === null || avaliacao.estado === 'avaliando') {
     return { tipo: 'aviso', texto: AVISO_SEM_BOLETIM }
   }
   if (avaliacao.estado === 'fora') {
     return {
       tipo: 'aviso',
-      texto: 'O último turno ficou sem boletim (Jev fora do ar). O CLAUDE.md ficou como estava.',
+      texto: `O último turno ficou sem boletim (Jev fora do ar). O ${arquivo} ficou como estava.`,
     }
   }
   if (avaliacao.melhorias.length === 0) {
     return {
       tipo: 'aviso',
-      texto: `Nenhum ponto de melhoria no último turno (nota ${formatarNota(avaliacao.nota)}). O CLAUDE.md ficou como estava.`,
+      texto: `Nenhum ponto de melhoria no último turno (nota ${formatarNota(avaliacao.nota)}). O ${arquivo} ficou como estava.`,
     }
   }
   return { tipo: 'regras', regras: avaliacao.melhorias.map(item => item.regra) }
 }
 
-function sobraDoCLAUDE(jaExistiam: readonly string[]): string {
+function sobraDoArquivo(jaExistiam: readonly string[], arquivo: ArquivoDeRegras): string {
   if (jaExistiam.length === 0) return ''
-  if (jaExistiam.length === 1) return '\nA outra já estava no CLAUDE.md.'
-  return `\nAs outras ${jaExistiam.length} já estavam no CLAUDE.md.`
+  if (jaExistiam.length === 1) return `\nA outra já estava no ${arquivo}.`
+  return `\nAs outras ${jaExistiam.length} já estavam no ${arquivo}.`
 }
 
-export function textoRegrasGravadas(adicionadas: readonly string[], jaExistiam: readonly string[]): string {
-  const sobra = sobraDoCLAUDE(jaExistiam)
+export function textoRegrasGravadas(
+  adicionadas: readonly string[],
+  jaExistiam: readonly string[],
+  arquivo: ArquivoDeRegras = 'CLAUDE.md',
+): string {
+  const sobra = sobraDoArquivo(jaExistiam, arquivo)
   const [unica] = adicionadas
   if (adicionadas.length === 1 && unica !== undefined) {
-    return `Gravei no CLAUDE.md esta regra: ${unica}${sobra}`
+    return `Gravei no ${arquivo} esta regra: ${unica}${sobra}`
   }
   const lista = adicionadas.map(regra => `- ${regra}`).join('\n')
-  return `Gravei no CLAUDE.md estas ${adicionadas.length} regras:\n${lista}${sobra}`
+  return `Gravei no ${arquivo} estas ${adicionadas.length} regras:\n${lista}${sobra}`
 }
 
-export function textoRegrasJaExistem(regras: readonly string[]): string {
+export function textoRegrasJaExistem(regras: readonly string[], arquivo: ArquivoDeRegras = 'CLAUDE.md'): string {
   const citadas = regras.map(regra => `"${regra}"`).join(', ')
   return regras.length === 1
-    ? `A regra ${citadas} já está no CLAUDE.md. Nada mudou.`
-    : `As regras ${citadas} já estão no CLAUDE.md. Nada mudou.`
+    ? `A regra ${citadas} já está no ${arquivo}. Nada mudou.`
+    : `As regras ${citadas} já estão no ${arquivo}. Nada mudou.`
 }
