@@ -33,6 +33,7 @@ Testando a partir de um clone local: `npx skills add . --list`.
 
 | Skill | Descrição |
 | ----- | --------- |
+| [`session-handoff`](skills/session-handoff/SKILL.md) | Cria ou retoma handoffs entre sessões com agentes de continuidade e verificação: sem argumentos cria; com nome de arquivo continua o trabalho, usando o diretório configurado por projeto. |
 | [`gut-bug-triage`](skills/gut-bug-triage/SKILL.md) | Classifica bugs e problemas pela matriz GUT, com critérios adaptados aos objetivos, requisitos e domínio do projeto, evidências, tratamento de incertezas e calculadora em Node puro. |
 | [`statusline`](skills/statusline/SKILL.md) | Status line do Claude Code em Node puro: diretório, branch, modelo, barra de contexto, custo e cotas de 5h/7d. Para você descobrir o quanto gastou antes que a fatura te conte. |
 | [`no-patience-dev-guidelines`](skills/no-patience-dev-guidelines/SKILL.md) | Diretrizes para agentes de código: respeitar o contexto do projeto, simplificar, fazer mudanças cirúrgicas, diagnosticar antes de corrigir, verificar o comportamento solicitado, revisar o próprio trabalho, preservar decisões e comunicar com origem, responsáveis, motivos e evidências. Ou: "para de inventar moda". |

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Session Handoff"
+  short_description: "Crie ou retome handoffs entre sessões com revisão"
+  default_prompt: "Use $session-handoff para criar o handoff desta sessão ou retomar o arquivo indicado."
