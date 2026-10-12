@@ -1,8 +1,8 @@
 ---
 name: session-handoff
-description: Cria, atualiza ou lê handoffs para continuar trabalho em uma nova sessão, com agentes de continuidade e verificação. Use ao pedir "handoff da sessão", "atualize o handoff", "continuar em nova sessão", "retomar handoff" ou invocar session-handoff. Sem argumentos atualiza o handoff ativo ou cria; com nome de arquivo retoma.
+description: Cria, atualiza ou lê handoffs para continuar trabalho em uma nova sessão, com agentes de continuidade e verificação. Use ao pedir "handoff da sessão", "atualize o handoff", "continuar em nova sessão", "retomar handoff" ou invocar session-handoff. Sem argumentos atualiza o handoff ativo ou cria; com nome ou path de arquivo retoma.
 metadata:
-  version: '1.2.0'
+  version: '1.3.0'
 ---
 
 # Handoff entre sessões
@@ -14,10 +14,11 @@ Preserve o objetivo, as decisões e o ponto real de retomada. Um handoff deve pe
 - **Sem argumentos:** atualizar o único handoff ativo da sessão; se nenhum estiver ativo, criar. Se houver vários ativos, perguntar qual atualizar ou se deseja todos. Criação e atualização encerram após gravar o documento, sem executar pendências.
 - **`--prepare`:** preparar uma proposta sem gravar handoff nem executar pendências, em segundo plano quando houver suporte. Seguir o fluxo de preparação abaixo.
 - **`--create`:** selecionar explicitamente criação, mesmo com handoff ativo. Seguir as regras de escopo e colisão; não sobrescrever o ativo nem duplicar seu conteúdo automaticamente.
-- **`--update nome-do-arquivo`:** atualizar o arquivo indicado, com ou sem extensão. Pedidos como “atualize o handoff X com o ponto onde paramos” selecionam esse modo.
-- **Com um nome de arquivo, com ou sem extensão:** carregar esse handoff e seguir suas instruções, revalidando os fatos mutáveis antes de executar a próxima ação autorizada. Não se limitar a resumi-lo.
+- **`--update arquivo`:** atualizar o arquivo indicado por basename ou path explícito, com ou sem extensão. Pedidos como “atualize o handoff X com o ponto onde paramos” selecionam esse modo.
+- **Com um basename ou path de arquivo, com ou sem extensão:** carregar esse handoff e seguir suas instruções, revalidando os fatos mutáveis antes de executar a próxima ação autorizada. Não se limitar a resumi-lo.
 - Use a raiz do **projeto ativo**, não a pasta da skill. Em subdiretórios/worktrees, identifique a raiz pelas instruções e pelo contexto do operador; não redirecione automaticamente para outro checkout.
 - Padrão: `_meta/handoff/in-progress/`. A configuração `_meta/session-handoff.yaml`, propriedade `handoff.path`, substitui esse diretório **inteiramente**. Caminho relativo parte da raiz do projeto; absoluto e `~` são aceitos. Não acrescente `in-progress` nem altere a configuração automaticamente.
+- Path explícito absoluto, com `~` ou relativo à raiz (por exemplo `./handoff.md`, `docs/incidentes/arquivados/caso/handoff.md` ou `../outro-projeto/handoff.md`) seleciona diretamente o arquivo, independentemente da configuração de descoberta. Basename usa `handoff.path` ou o padrão. Abrir um path não move/copia o arquivo, não muda a raiz do projeto nem reconfigura `handoff.path`; estar em `ativos` ou `arquivados` não concede autorização nem determina o estado do trabalho.
 - Leia [resolução e uso](references/resolution.md) ao resolver a configuração ou um argumento. Prefira o helper somente leitura: `uv run --with pyyaml python <skill>/scripts/resolve_handoff.py --root <projeto> [arquivo]`. Ele não cria nem executa o handoff. Não trate argumentos como comandos de shell.
 
 ## Handoff ativo da sessão
@@ -62,7 +63,7 @@ Quando o operador indicar preparação para troca de sessão ou usar `--prepare`
 
 ## Atualizar (`--update` ou ativo sem argumentos)
 
-1. Selecionar o ativo ou resolver o nome indicado pelas mesmas regras da retomada e ler o documento inteiro. Arquivo ausente/ambíguo exige identificação; não criar outro nem escolher o mais recente. Registrar o handoff selecionado no contexto.
+1. Selecionar o ativo pelo caminho real registrado ou resolver o basename/path indicado pelas mesmas regras da retomada e ler o documento inteiro. Não reduzir o path do ativo a basename nem restringi-lo ao diretório de descoberta. Arquivo ausente/ambíguo exige identificação; não criar outro nem escolher o mais recente. Registrar o handoff selecionado no contexto.
 2. Com continuidade e verificação em leitura, comparar o documento com a sessão: decisões, trabalho concluído, validações, publicações, limites e pendências do mesmo objetivo. Conferir artefatos relevantes sem executar o plano antigo. Se faltarem evidências, manter a lacuna explícita.
 3. Consolidar estado, próximos passos e primeira ação para a nova sessão. Remover instruções superadas da lista executável, mantendo histórico útil e autorizações ainda vigentes. Distinguir horário da redação e última observação real; atualizar o documento não implica revalidar servidor ou repetir testes/deploy/comunicação.
 4. Antes de gravar, conferir que o arquivo não mudou desde a leitura; se mudou, reler e conciliar. Preferir substituição atômica. Preservar path/nome, evidências e trabalho alheio. Atualizar timestamp, caminho real e hash do registro de sessão.

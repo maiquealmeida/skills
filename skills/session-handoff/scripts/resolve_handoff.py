@@ -28,10 +28,15 @@ UniqueKeyLoader.add_constructor(
 )
 
 
-def handoff_directory(root):
+def project_root(root):
     root = Path(root).expanduser().resolve(strict=True)
     if not root.is_dir():
         raise ValueError("A raiz do projeto deve ser um diretório.")
+    return root
+
+
+def handoff_directory(root):
+    root = project_root(root)
     config = root / "_meta/session-handoff.yaml"
     value, source = "_meta/handoff/in-progress", "default"
     if config.exists() or config.is_symlink():
@@ -59,25 +64,43 @@ def handoff_directory(root):
 
 
 def resolve(root, name=None):
-    root, directory, source = handoff_directory(root)
-    result = {"root": str(root), "directory": str(directory), "source": source}
     if name is None:
-        return result
-    if not name or name in {".", ".."} or any(c in name for c in ("/", "\\", "\0")):
-        raise ValueError("Informe somente um nome de arquivo dentro do diretório.")
-    names = [name] if Path(name).suffix else [name, name + ".md"]
+        root, directory, source = handoff_directory(root)
+        return {"root": str(root), "directory": str(directory), "source": source}
+    if (not name or name in {".", ".."} or any(c in name for c in ("\\", "\0"))
+            or name.endswith("/") or name.rsplit("/", 1)[-1] in {".", ".."}):
+        raise ValueError("Informe um nome ou caminho de arquivo válido.")
+    supplied = Path(name).expanduser()
+    explicit = supplied.is_absolute() or "/" in name
+    if explicit:
+        # An explicit file is independent of discovery configuration, even if
+        # that configuration is invalid. Do not rewrite it or relocate the file.
+        root = project_root(root)
+        path = supplied if supplied.is_absolute() else root / supplied
+        directory, source = path.parent.resolve(), "explicit_path"
+        filename = path.name
+    else:
+        root, directory, source = handoff_directory(root)
+        filename = name
+    result = {"root": str(root), "directory": str(directory), "source": source}
+    names = [filename] if Path(filename).suffix else [filename, filename + ".md"]
     matches = []
     for candidate in names:
         path = directory / candidate
         if path.exists():
             target = path.resolve(strict=True)
-            if not target.is_relative_to(directory):
+            if not explicit and not target.is_relative_to(directory):
                 raise ValueError("O arquivo aponta para fora do diretório de handoffs.")
             if not target.is_file():
                 raise ValueError("O candidato não é um arquivo regular.")
             matches.append(target)
     if len(matches) != 1:
-        candidates = sorted(p.name for p in directory.iterdir() if p.is_file()) if directory.is_dir() else []
+        # Do not list unrelated files in an explicitly selected external folder.
+        if explicit:
+            candidates = [str(directory / candidate) for candidate in names
+                          if (directory / candidate).is_file()]
+        else:
+            candidates = sorted(p.name for p in directory.iterdir() if p.is_file()) if directory.is_dir() else []
         result.update({"error": "ambiguous" if matches else "not_found", "candidates": candidates})
         return result
     result.update({"file": str(matches[0]), "sha256": hashlib.sha256(matches[0].read_bytes()).hexdigest()})
@@ -86,14 +109,14 @@ def resolve(root, name=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("name", nargs="?")
+    parser.add_argument("name", nargs="?", help="Basename ou caminho de arquivo absoluto/relativo à raiz.")
     parser.add_argument("--root", required=True)
     args = parser.parse_args()
     try:
         result = resolve(args.root, args.name)
     except (OSError, ValueError, yaml.YAMLError):
         # Do not echo YAML parser snippets: configuration may contain private values.
-        print(json.dumps({"error": "invalid_input", "message": "Raiz, configuração ou nome inválido; confira a configuração e as regras da skill."}, ensure_ascii=False))
+        print(json.dumps({"error": "invalid_input", "message": "Raiz, configuração ou arquivo inválido; confira o caminho e as regras da skill."}, ensure_ascii=False))
         return 2
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 2 if "error" in result else 0

@@ -2,6 +2,8 @@
 
 Dimensione ao trabalho. O documento é um ponto de retomada, não transcrição da conversa. O template abaixo é uma estrutura orientadora: omita campos inaplicáveis e escreva lacunas reais em vez de preenchê-los com suposições.
 
+`Arquivo` registra o caminho real completo selecionado, sem exigir `_meta/handoff/in-progress` ou `handoff.path`. `Projeto/diretório` continua sendo a raiz/checkout do trabalho, mesmo quando o handoff estiver fora dele. A pasta `ativos`/`arquivados` não substitui o estado, o escopo e as autorizações no conteúdo.
+
 ```markdown
 # Handoff — <tema>
 

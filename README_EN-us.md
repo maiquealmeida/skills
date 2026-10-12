@@ -23,11 +23,12 @@ Local testing from a clone: `npx skills add . --list`.
 
 | Skill | Description |
 | ----- | ----------- |
-| [`session-handoff`](skills/session-handoff/SKILL.md) | Creates or resumes session handoffs with continuity and verification agents: no arguments updates the active handoff or creates one; `--create` selects creation, `--update name` updates, and a filename resumes work, using the project-configured directory; `--prepare` drafts in the background when supported. |
+| [`session-handoff`](skills/session-handoff/SKILL.md) | Creates or resumes session handoffs with continuity and verification agents: no arguments updates the active handoff or creates one; `--create` selects creation, `--update file` updates, and a basename or explicit path resumes work. Basenames use the configured directory; absolute or project-root-relative paths can select any directory. `--prepare` drafts in the background when supported. |
 | [`gut-bug-triage`](skills/gut-bug-triage/SKILL.md) | Classifies bugs and software problems using GUT, with criteria calibrated to project goals, requirements and domain, evidence, uncertainty handling and a dependency-free Node calculator. |
 | [`statusline`](skills/statusline/SKILL.md) | Custom Claude Code status line in plain Node: directory, branch, model, context bar, cost and 5h/7d quotas. |
 | [`no-patience-dev-guidelines`](skills/no-patience-dev-guidelines/SKILL.md) | Guidelines for coding agents: respect project context, simplify, make surgical changes, diagnose before patching, verify requested behavior, review your own work, preserve decisions, and report with sources, responsible actors, reasons, and evidence. |
 | [`orca-layout`](skills/orca-layout/SKILL.md) | Opens a grid of Orca terminal panes, one per project, from a per-repo `.orca/layouts/<name>.layout.json` and starts everything in dev mode (macOS, Linux and Windows, plain Node). No layout yet? It analyzes the repo and proposes one. |
+| [`sentry-project`](skills/sentry-project/README_EN-us.md) | Plans, integrates and inspects Sentry in any Git workspace, with Node API scripts, cost/isolation scenarios and configuration through `.env`, `.env.local` or agent environment settings. |
 
 ## Plugins
 

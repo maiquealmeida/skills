@@ -11,6 +11,7 @@ Preparar uma proposta de handoff para o escopo recebido, preservando decisões e
 - Raiz do projeto e checkout; modo pretendido e tema(s)/escopo selecionado, ou seleção ainda pendente.
 - Contexto suficiente da conversa: objetivo, decisões, autorizações, revogações e ponto de parada. Não presumir acesso automático às mensagens futuras.
 - Registro de handoff(s) ativo(s), caminhos reais, hashes e conteúdo disponível; referências/evidências pertinentes e template da skill.
+- Conservar o caminho completo do arquivo-base, inclusive fora de `handoff.path`/padrão ou em pasta de arquivo. Não reduzir a basename, propor migração/cópia automática nem tratar a localização como estado ou autorização. A raiz/checkout informada continua sendo o contexto do trabalho.
 - Instante de corte do contexto fornecido e recursos de leitura permitidos. Se houver lacuna, identificá-la; arquivos sozinhos não substituem decisões da conversa.
 
 ## Instruções

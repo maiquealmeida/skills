@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sentry por API"
+  short_description: "Planeje e integre Sentry com scripts Node e configuração por ambiente"
+  default_prompt: "Use $sentry-project para avaliar e configurar Sentry no repositório ativo."
