@@ -2,7 +2,7 @@
 
 > 🇺🇸 English version: [README_EN-us.md](README_EN-us.md)
 
-Plugin do Claude Code que dá nota a cada resposta do Claude e sugere regras para o `CLAUDE.md`. Quem corrige a prova é o [Jev](https://docs.typesafe.ai), o modelo da TypeSafe. Para você descobrir que o Claude esqueceu de rodar os testes antes de o deploy te contar.
+Plugin do Claude Code que dá nota a cada resposta do Claude e sugere regras para o `AGENTS.md` (ou `CLAUDE.md`, se só houver `CLAUDE.md`). Quem corrige a prova é o [Jev](https://docs.typesafe.ai), o modelo da TypeSafe. Para você descobrir que o Claude esqueceu de rodar os testes antes de o deploy te contar.
 
 ## O que ele faz
 
@@ -29,11 +29,11 @@ Onde o boletim aparece:
 | Comando | O que faz |
 | --- | --- |
 | `/boletim` | Abre o painel com o boletim do último turno. |
-| `/melhorar` | Grava no `CLAUDE.md` da raiz as regras dos pontos de melhoria, na seção `## Regras do boletim`, sem duplicar. Num projeto sem `CLAUDE.md` e com `AGENTS.md`, grava no `AGENTS.md`: um `CLAUDE.md` novo faria o Claude Code parar de ler os `AGENTS.md`. |
+| `/melhorar` | Grava no `AGENTS.md` da raiz as regras dos pontos de melhoria, na seção `## Regras do boletim`, sem duplicar. Se só houver `CLAUDE.md`, usa esse arquivo. Se nenhum dos dois existir, cria `AGENTS.md`. Com ambos presentes, só altera o `AGENTS.md`; uma falha na gravação não redireciona as regras para outro arquivo. |
 
 ## Requisitos
 
-- **Claude Code** com a API de mods. Testado na 2.1.295; essa API é de acesso antecipado e pode mudar entre versões.
+- **Claude Code** com a API de mods. Testado na 2.1.296; essa API é de acesso antecipado e pode mudar entre versões.
 - **Chave da TypeSafe** em `~/.env.local` (na sua home), lida a cada avaliação:
 
   ```bash
@@ -78,7 +78,7 @@ Com o plugin carregado de uma pasta (`--plugin-dir`), o Claude Code grava `.clau
 | Caminho | Papel |
 | --- | --- |
 | `hooks/register.tsx` | Tudo o que toca no motor: eventos, estado, arquivos, rede, tela e comandos. |
-| `hooks/jev.ts` | Lógica pura: requisição ao Jev, notas, gráfico, textos do boletim e edição do `CLAUDE.md`. |
+| `hooks/jev.ts` | Lógica pura: requisição ao Jev, notas, gráfico, textos do boletim e edição do arquivo de regras. |
 | `types/index.d.ts` | Contrato do `$.state` (turno, avaliação, histórico e onde o boletim aparece). |
 | `criterios.json` | Critérios editáveis, com os degraus de cada um. |
 | `tests/` | Motor falso (Jev, arquivos, store, relógio, painel) e os testes do plugin. |

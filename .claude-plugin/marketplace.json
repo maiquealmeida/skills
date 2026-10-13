@@ -6,7 +6,7 @@
     {
       "name": "boletim-do-claude",
       "source": "./plugins/boletim-do-claude",
-      "description": "Dá nota a cada resposta do Claude com o Jev da TypeSafe e sugere regras para o CLAUDE.md."
+      "description": "Dá nota a cada resposta do Claude com o Jev da TypeSafe e sugere regras para o AGENTS.md, com fallback para CLAUDE.md existente."
     }
   ]
 }

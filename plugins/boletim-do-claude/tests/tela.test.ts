@@ -11,7 +11,7 @@ const NOTAS_7_3 = [2, 1, 0, 2, 1, 2]
 const NOTAS_6_0 = [1, 1, 1, 1, 1, 1]
 const NOTAS_10 = [2, 2, 2, 2, 2, 2]
 const LINHA_7_3 =
-  'Boletim: nota 7,3 · 2 pontos de melhoria · /boletim pra ver, /melhorar pra gravar no CLAUDE.md'
+  'Boletim: nota 7,3 · 2 pontos de melhoria · /boletim pra ver, /melhorar pra gravar no arquivo de regras'
 const AVISO_VAZIO = 'Ainda não tem boletim. Ele aparece quando o turno terminar.'
 
 const PAINEL_7_3 = [
@@ -29,7 +29,7 @@ const PAINEL_7_3 = [
   '  Regra sugerida: Antes de dizer que terminou, rode os testes e diga o resultado.',
   'Como conferir (ok)',
   '  Regra sugerida: Ao terminar, diga como eu confiro na tela: qual página abrir e o que fazer.',
-  '/melhorar grava essas regras no CLAUDE.md',
+  '/melhorar grava essas regras no arquivo de regras',
   ' ',
   'Últimos turnos',
   '▆',

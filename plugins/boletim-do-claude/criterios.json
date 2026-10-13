@@ -4,7 +4,7 @@
     "criterios": "A lista de critérios. Cada item vira uma pergunta para o Jev e uma linha no boletim. Lista vazia, ou JSON quebrado, deixa o turno sem nota (o motivo vai para o log de debug).",
     "nome": "Nome curto do critério. Aparece no painel e na linha 'melhorar: ...'. Obrigatório.",
     "pergunta": "O que o Jev deve responder sobre o turno, em uma frase. Obrigatório.",
-    "regra": "A instrução que o /melhorar grava no CLAUDE.md quando o critério não fica em ótimo. Escreva como uma ordem para o Claude. Obrigatório.",
+    "regra": "A instrução que o /melhorar grava no AGENTS.md (ou no CLAUDE.md, se só houver CLAUDE.md) quando o critério não fica em ótimo. Escreva como uma ordem para o Claude. Obrigatório.",
     "degraus": "Opcional. O que é fraco, ok e ótimo, com fatos que dá para ver no turno (pedido, arquivos, comandos, resposta). Sem degraus, ou sem algum deles, o Jev usa um texto genérico no lugar.",
     "ignorados": "Um critério sem nome, pergunta ou regra é ignorado, sem aviso."
   },

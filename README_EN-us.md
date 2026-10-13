@@ -43,7 +43,7 @@ Local testing from a clone: `claude --plugin-dir plugins/boletim-do-claude`.
 
 | Plugin | Description |
 | ------ | ----------- |
-| [`boletim-do-claude`](plugins/boletim-do-claude/README_EN-us.md) | Grades every Claude answer with TypeSafe's [Jev](https://docs.typesafe.ai) (summary, how to check, proof, assumptions, change size and next step), shows the report in a panel and, with `/melhorar`, writes the missing rules to your `CLAUDE.md`. |
+| [`boletim-do-claude`](plugins/boletim-do-claude/README_EN-us.md) | Grades every Claude answer with TypeSafe's [Jev](https://docs.typesafe.ai) (summary, how to check, proof, assumptions, change size and next step), shows the report in a panel and, with `/melhorar`, writes the missing rules to your `AGENTS.md` (or `CLAUDE.md` when only `CLAUDE.md` exists). |
 
 ## Adding a skill
 

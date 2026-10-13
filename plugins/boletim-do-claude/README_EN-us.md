@@ -2,7 +2,7 @@
 
 > 🇧🇷 Versão em português: [README.md](README.md)
 
-Claude Code plugin that grades every Claude answer and suggests rules for your `CLAUDE.md`. The grader is [Jev](https://docs.typesafe.ai), TypeSafe's model. So you find out Claude skipped the tests before the deploy tells you.
+Claude Code plugin that grades every Claude answer and suggests rules for your `AGENTS.md` (or `CLAUDE.md` when only `CLAUDE.md` exists). The grader is [Jev](https://docs.typesafe.ai), TypeSafe's model. So you find out Claude skipped the tests before the deploy tells you.
 
 ## What it does
 
@@ -29,13 +29,13 @@ Where the report shows up:
 | Command | What it does |
 | --- | --- |
 | `/boletim` | Opens the panel with the last turn's report. |
-| `/melhorar` | Writes the improvement points' rules to the root `CLAUDE.md`, under `## Regras do boletim`, without duplicates. In a project with an `AGENTS.md` and no `CLAUDE.md`, it writes to `AGENTS.md`: a new `CLAUDE.md` would make Claude Code stop reading the `AGENTS.md` files. |
+| `/melhorar` | Writes the improvement points' rules to the root `AGENTS.md`, under `## Regras do boletim`, without duplicates. When only `CLAUDE.md` exists, uses that file. When neither exists, creates `AGENTS.md`. When both exist, only changes `AGENTS.md`; a write failure does not redirect rules to another file. |
 
 All the plugin's text is in Brazilian Portuguese.
 
 ## Requirements
 
-- **Claude Code** with the mods API. Tested on 2.1.295; that API is early access and can change between releases.
+- **Claude Code** with the mods API. Tested on 2.1.296; that API is early access and can change between releases.
 - **TypeSafe API key** in `~/.env.local` (in your home folder), read on every evaluation:
 
   ```bash
@@ -80,7 +80,7 @@ With the plugin loaded from a folder (`--plugin-dir`), Claude Code writes `.clau
 | Path | Role |
 | --- | --- |
 | `hooks/register.tsx` | Everything that touches the engine: events, state, files, network, screen and commands. |
-| `hooks/jev.ts` | Pure logic: Jev request, grades, chart, report text and `CLAUDE.md` editing. |
+| `hooks/jev.ts` | Pure logic: Jev request, grades, chart, report text and rules file editing. |
 | `types/index.d.ts` | The `$.state` contract (turn, evaluation, history and where the report shows). |
 | `criterios.json` | Editable criteria, with each one's levels. |
 | `tests/` | Fake engine (Jev, files, store, clock, panel) and the plugin's tests. |

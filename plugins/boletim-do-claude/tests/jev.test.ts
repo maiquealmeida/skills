@@ -457,7 +457,7 @@ describe('textos do boletim', () => {
 
   test('linha acima do prompt: normal com melhorias, discreta sem, amarela com o Jev fora', () => {
     expect(linhaAcimaDoPrompt(pronta)).toEqual({
-      texto: 'Boletim: nota 7,3 · 2 pontos de melhoria · /boletim pra ver, /melhorar pra gravar no CLAUDE.md',
+      texto: 'Boletim: nota 7,3 · 2 pontos de melhoria · /boletim pra ver, /melhorar pra gravar no arquivo de regras',
       tom: 'normal',
     })
     expect(linhaAcimaDoPrompt(avaliacaoPronta('t', seis(['ótimo', 'ok']), 5)).texto).toContain('1 ponto de melhoria')
@@ -568,11 +568,11 @@ describe('/melhorar: regras no CLAUDE.md', () => {
   })
 
   test('o texto de cada resposta do /melhorar', () => {
-    expect(textoRegrasGravadas([A], [])).toBe(`Gravei no CLAUDE.md esta regra: ${A}`)
-    expect(textoRegrasGravadas([A, B], [])).toBe(`Gravei no CLAUDE.md estas 2 regras:\n- ${A}\n- ${B}`)
-    expect(textoRegrasGravadas([B], [A])).toBe(`Gravei no CLAUDE.md esta regra: ${B}\nA outra já estava no CLAUDE.md.`)
-    expect(textoRegrasJaExistem([A, B])).toBe(`As regras "${A}", "${B}" já estão no CLAUDE.md. Nada mudou.`)
-    expect(textoRegrasJaExistem([A])).toBe(`A regra "${A}" já está no CLAUDE.md. Nada mudou.`)
+    expect(textoRegrasGravadas([A], [])).toBe(`Gravei no AGENTS.md esta regra: ${A}`)
+    expect(textoRegrasGravadas([A, B], [])).toBe(`Gravei no AGENTS.md estas 2 regras:\n- ${A}\n- ${B}`)
+    expect(textoRegrasGravadas([B], [A])).toBe(`Gravei no AGENTS.md esta regra: ${B}\nA outra já estava no AGENTS.md.`)
+    expect(textoRegrasJaExistem([A, B])).toBe(`As regras "${A}", "${B}" já estão no AGENTS.md. Nada mudou.`)
+    expect(textoRegrasJaExistem([A])).toBe(`A regra "${A}" já está no AGENTS.md. Nada mudou.`)
   })
 
   test('o plano depende do estado do último boletim', () => {
@@ -580,11 +580,11 @@ describe('/melhorar: regras no CLAUDE.md', () => {
     expect(planejarMelhorar({ estado: 'avaliando', id: 't' }).tipo).toBe('aviso')
     expect(planejarMelhorar({ estado: 'fora', id: 't' })).toEqual({
       tipo: 'aviso',
-      texto: 'O último turno ficou sem boletim (Jev fora do ar). O CLAUDE.md ficou como estava.',
+      texto: 'O último turno ficou sem boletim (Jev fora do ar). O AGENTS.md ficou como estava.',
     })
     expect(planejarMelhorar(avaliacaoPronta('t', seis(['ótimo']), 1))).toEqual({
       tipo: 'aviso',
-      texto: 'Nenhum ponto de melhoria no último turno (nota 10,0). O CLAUDE.md ficou como estava.',
+      texto: 'Nenhum ponto de melhoria no último turno (nota 10,0). O AGENTS.md ficou como estava.',
     })
     expect(planejarMelhorar(avaliacaoPronta('t', seis(), 1))).toEqual({ tipo: 'regras', regras: ['regra de C2', 'regra de C1'] })
   })

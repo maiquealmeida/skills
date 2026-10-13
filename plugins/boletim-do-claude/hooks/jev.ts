@@ -57,7 +57,7 @@ export type Registro = { arquivo: string } | { comando: Comando }
 export type Plano = { tipo: 'aviso'; texto: string } | { tipo: 'regras'; regras: string[] }
 
 /** Onde o /melhorar grava, na raiz do projeto. */
-export type ArquivoDeRegras = 'CLAUDE.md' | 'AGENTS.md'
+export type ArquivoDeRegras = 'AGENTS.md' | 'AGENTS.md'
 
 export type RegrasIncluidas = {
   conteudo: string
@@ -365,7 +365,7 @@ export function linhaAcimaDoPrompt(avaliacao: Avaliacao): { texto: string; tom: 
   }
   const pontos = quantos === 1 ? '1 ponto de melhoria' : `${quantos} pontos de melhoria`
   return {
-    texto: `Boletim: nota ${nota} · ${pontos} · /boletim pra ver, /melhorar pra gravar no CLAUDE.md`,
+    texto: `Boletim: nota ${nota} · ${pontos} · /boletim pra ver, /melhorar pra gravar no arquivo de regras`,
     tom: 'normal',
   }
 }
@@ -390,7 +390,7 @@ function secaoDeMelhorias(melhorias: readonly Resultado[]): Linha[] {
       [{ texto: `${item.nome} (${item.degrau})` }],
       [{ texto: `  Regra sugerida: ${item.regra}` }],
     ]),
-    [{ texto: '/melhorar grava essas regras no CLAUDE.md', discreto: true }],
+    [{ texto: '/melhorar grava essas regras no arquivo de regras', discreto: true }],
   ]
 }
 
@@ -460,12 +460,11 @@ export function aplicarRegistro(turno: Turno, registro: Registro): Turno {
 // ── /melhorar: regras no CLAUDE.md ou no AGENTS.md ──────────────────────────
 
 /**
- * O `CLAUDE.md` quando ele existe. Sem ele, o `AGENTS.md` que já existir: o Claude Code
- * só lê os `AGENTS.md` enquanto o projeto não tem `CLAUDE.md`, então criar um calaria
- * todos eles. Sem nenhum dos dois, o `CLAUDE.md` nasce.
+ * Prioriza o `AGENTS.md` existente, mesmo quando há `CLAUDE.md`.
+ * Sem `AGENTS.md`, usa o `CLAUDE.md` existente. Sem ambos, cria `AGENTS.md`.
  */
 export function escolherArquivoDeRegras(existe: { claude: boolean; agents: boolean }): ArquivoDeRegras {
-  return !existe.claude && existe.agents ? 'AGENTS.md' : 'CLAUDE.md'
+  return existe.agents || !existe.claude ? 'AGENTS.md' : 'CLAUDE.md'
 }
 
 /** Espaços viram um só e maiúsculas somem: é assim que duas regras são comparadas. */
@@ -535,7 +534,7 @@ export function incluirRegras(conteudo: string, regras: readonly string[]): Regr
 const AVISO_SEM_BOLETIM = 'Ainda não tem boletim de um turno pra usar.'
 
 /** Decide o que o /melhorar faz com a avaliação do último turno. */
-export function planejarMelhorar(avaliacao: Avaliacao | null, arquivo: ArquivoDeRegras = 'CLAUDE.md'): Plano {
+export function planejarMelhorar(avaliacao: Avaliacao | null, arquivo: ArquivoDeRegras = 'AGENTS.md'): Plano {
   if (avaliacao === null || avaliacao.estado === 'avaliando') {
     return { tipo: 'aviso', texto: AVISO_SEM_BOLETIM }
   }
@@ -563,7 +562,7 @@ function sobraDoArquivo(jaExistiam: readonly string[], arquivo: ArquivoDeRegras)
 export function textoRegrasGravadas(
   adicionadas: readonly string[],
   jaExistiam: readonly string[],
-  arquivo: ArquivoDeRegras = 'CLAUDE.md',
+  arquivo: ArquivoDeRegras = 'AGENTS.md',
 ): string {
   const sobra = sobraDoArquivo(jaExistiam, arquivo)
   const [unica] = adicionadas
@@ -574,7 +573,7 @@ export function textoRegrasGravadas(
   return `Gravei no ${arquivo} estas ${adicionadas.length} regras:\n${lista}${sobra}`
 }
 
-export function textoRegrasJaExistem(regras: readonly string[], arquivo: ArquivoDeRegras = 'CLAUDE.md'): string {
+export function textoRegrasJaExistem(regras: readonly string[], arquivo: ArquivoDeRegras = 'AGENTS.md'): string {
   const citadas = regras.map(regra => `"${regra}"`).join(', ')
   return regras.length === 1
     ? `A regra ${citadas} já está no ${arquivo}. Nada mudou.`

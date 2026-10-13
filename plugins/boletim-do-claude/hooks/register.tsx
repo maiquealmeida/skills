@@ -1,5 +1,5 @@
 // Só o que toca no motor: eventos, estado, arquivos, rede, tela e comandos.
-// Cálculo, texto e CLAUDE.md ficam em ./jev, puros.
+// Cálculo, texto e edição das regras ficam em ./jev, puros.
 
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register, ResolveInput } from 'claude-code'
@@ -161,7 +161,7 @@ async function arquivoDeRegras($: EngineInterface): Promise<{ nome: ArquivoDeReg
 
 async function gravarRegras($: EngineInterface): Promise<string> {
   const ultima = await read($, avaliacao)
-  let nome: ArquivoDeRegras = 'CLAUDE.md'
+  let nome: ArquivoDeRegras = 'AGENTS.md'
   try {
     const arquivo = await arquivoDeRegras($)
     nome = arquivo.nome
@@ -229,7 +229,7 @@ export const register: Register = on => {
     await protegido($, 'comando /melhorar', () =>
       $.command.register({
         name: 'melhorar',
-        description: 'Grava no CLAUDE.md (ou no AGENTS.md, se o projeto só tem ele) as regras sugeridas pelo último boletim',
+        description: 'Grava no AGENTS.md (ou no CLAUDE.md existente, se não houver AGENTS.md) as regras sugeridas pelo último boletim',
       }),
     )
     await protegido($, 'histórico', () => recuperarHistorico($))

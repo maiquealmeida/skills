@@ -53,7 +53,7 @@ Testando a partir de um clone local: `claude --plugin-dir plugins/boletim-do-cla
 
 | Plugin | Descrição |
 | ------ | --------- |
-| [`boletim-do-claude`](plugins/boletim-do-claude/README.md) | Dá nota a cada resposta do Claude com o [Jev](https://docs.typesafe.ai) da TypeSafe (resumo, como conferir, prova, suposições, tamanho da mudança e próximo passo), mostra o boletim num painel e, com `/melhorar`, grava no `CLAUDE.md` as regras que faltaram. Para você descobrir que o Claude esqueceu de testar antes de o deploy te contar. |
+| [`boletim-do-claude`](plugins/boletim-do-claude/README.md) | Dá nota a cada resposta do Claude com o [Jev](https://docs.typesafe.ai) da TypeSafe (resumo, como conferir, prova, suposições, tamanho da mudança e próximo passo), mostra o boletim num painel e, com `/melhorar`, grava no `AGENTS.md` as regras que faltaram (ou no `CLAUDE.md`, se só houver `CLAUDE.md`). Para você descobrir que o Claude esqueceu de testar antes de o deploy te contar. |
 
 ## Adicionando uma skill
 
