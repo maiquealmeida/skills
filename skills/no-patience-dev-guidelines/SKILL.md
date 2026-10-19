@@ -65,7 +65,7 @@ Before delivery, review your own diff for accidental edits, duplicated logic, de
 
 **Define success criteria. Verify behavior, not just plausible code.**
 
-Transform tasks into verifiable goals:
+Transform tasks into verifiable goals. Apply the test-cost and deferral rules in section 9 to the examples and verification steps below:
 
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Reproduce the failure, confirm a regression test fails for that reason when appropriate, then make it pass"
@@ -86,7 +86,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - Choose checks proportional to the change. Do not create elaborate tests for trivial edits or tests that merely mirror the implementation; derive expected behavior from requirements and contracts.
 - Never delete checks, weaken assertions, suppress errors, or change expected results merely to obtain a passing result. Changing a test requires an explained contract change or evidence that the test itself is wrong.
 - Review relevant existing behavior for regressions. A successful check supports only the behavior and environment it actually covers.
-- Complete the authorized task through implementation and relevant verification. If a real blocker prevents completion, identify the exact obstacle, completed work, remaining work, and input or access needed. Do not call partially implemented or unverified behavior complete.
+- Complete the authorized task through implementation and relevant verification, recording deferred tests under section 9. If a real blocker prevents completion, identify the exact obstacle, completed work, remaining work, and input or access needed. Distinguish implementation completion from verification still pending; never claim deferred tests passed.
 
 ## 5. Never Make Vague Claims
 
@@ -133,3 +133,30 @@ Before sending any communication, check whether the reader can identify the subj
 - Carry forward the user's corrections and existing approvals. Reopen a settled decision only when new evidence or changed requirements justify it; explain that evidence.
 - For long tasks or handoffs, use the project's existing progress mechanism to record the minimum needed to resume: decisions, changed files, verification results, blockers, and next steps. Do not create a new tracking system for a small task.
 - Do not restart completed work or replace the original objective merely because context was shortened or the user asked for status.
+
+## 8. Don't Be Curious About Unrelated Files When Committing
+
+**Stay focused on committing your own work.**
+
+- When preparing a commit, if new files or directories appear that you did not create, do not read their contents or investigate what they are. Their presence alone is not a reason to expand the task.
+- Stage explicit paths and commit only your own task changes. Leave unrelated files and directories untouched and out of your commits.
+- Finish committing all your task files and complete any remaining assigned work first. Only when no tasks remain may you notify the user about the unrelated paths and offer to make a separate commit for them. Wait for the user's authorization before investigating or committing those files.
+
+## 9. Keep Test Cost Below Implementation Cost
+
+**Tests are welcome when they cost less than the implementation. Otherwise, defer them and keep the operator informed.**
+
+- Unless the user explicitly requests test execution, run tests only when their expected time and effort cost less than the implementation. Use focused checks for small changes; do not run the entire test suite for a small edit.
+- When changes may affect other modules, defer the tests covering those impacts and tell the user. Also defer tests whose expected cost is not lower than the implementation cost. Do not broaden test execution automatically.
+- Record deferred tests in the project-root `.agents/config.local.json`, using the exact property name `postPonedTests`. Store an array of strings identifying the actual test commands and selectors to run, including the working directory when needed. Create the directory or file if absent; preserve other properties and existing pending entries, and avoid duplicates. For example:
+
+  ```json
+  {
+    "postPonedTests": [
+      "npm test -- --run tests/integration/orders.test.ts"
+    ]
+  }
+  ```
+
+- At the end of every turn, check `postPonedTests`. While the array is nonempty, remind the operator that tests remain pending and that they can request execution at any time. Include this reminder even when no new tests were deferred during that turn.
+- When the user requests the deferred tests, run the recorded tests regardless of the cost threshold and report their results. After all recorded tests have run, clear the property to `[]`, preserving the rest of the configuration. If execution is interrupted or a test cannot be run, retain the unexecuted entries and explain the blocker. A failed test was executed: report the failure explicitly rather than describing an empty pending list as a successful result.
