@@ -1,0 +1,144 @@
+<!doctype html>
+<!--
+  decision-page starter. Copy to <page-dir>/index.html and rewrite the content AND the look:
+  the palette, fonts and figures below are placeholders, not a house style
+  (see references/page-design.md). Keep the CONTRACT intact:
+
+  - one <section data-key="..." [data-required]> per decision; data-label is the short chip name
+  - inside it, radios (single choice) or checkboxes (multi choice) with name = the same key
+  - an optional <input data-custom-for="key" value="custom"> paired with a radio value="custom"
+  - #notes textarea (optional), #send button, #status line
+  - POST /api/choice with header X-Decision-Token (from ?token=) and body
+    { "choices": { key: value | [values] }, "notes": "..." }
+  The server stops itself after the first valid submission and closes the Orca tab it opened.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Decisions · TOPIC</title>
+<style>
+:root{
+  --paper: oklch(97% 0.012 85); --paper-2: oklch(93% 0.02 85);
+  --ink: oklch(24% 0.025 60);   --ink-2: oklch(44% 0.025 60);
+  --rule: oklch(83% 0.025 80);  --accent: oklch(52% 0.11 152); --accent-soft: oklch(91% 0.05 152);
+  --warn: oklch(72% 0.14 70);   --bad: oklch(56% 0.16 32);
+  --ease: cubic-bezier(.22,1,.36,1);
+  --gutter: clamp(16px, 4vw, 56px);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 clamp(15px,1vw,17px)/1.6 Georgia, serif}
+.page{max-width:1200px;margin:0 auto;padding:clamp(32px,6vw,80px) var(--gutter) 40px}
+h1{font-size:clamp(2.2rem,5vw,4.4rem);line-height:1;margin:0 0 .3em}
+.meter{height:8px;background:var(--paper-2);margin:20px 0 8px}
+.meter > i{display:block;height:100%;background:var(--accent);transform-origin:left;transform:scaleX(0);transition:transform .8s var(--ease)}
+section{padding:clamp(28px,5vw,64px) 0;border-top:1px solid var(--rule)}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,3vw,44px);align-items:start}
+@media (max-width:1000px){.split{grid-template-columns:1fr}}
+.opt{display:grid;grid-template-columns:24px 1fr;gap:12px;padding:16px 18px;border:1.5px solid var(--rule);margin-bottom:12px;cursor:pointer;transition:border-color .3s,background .3s}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.opt input:focus-visible{outline:3px solid var(--warn);outline-offset:3px}
+.imp{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease)}
+.opt:has(input:checked) .imp{grid-template-rows:1fr}
+.imp > div{overflow:hidden}
+figure{margin:0;position:sticky;top:24px;border:1.5px solid var(--ink);padding:16px;background:oklch(99% 0.005 85)}
+.dock{position:sticky;bottom:0;background:var(--ink);color:var(--paper)}
+.dock-in{max-width:1200px;margin:0 auto;padding:14px var(--gutter);display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}
+.chip{display:inline-block;font:500 .75rem ui-monospace,monospace;padding:4px 8px;margin:2px;border:1px solid oklch(60% 0.02 80)}
+.chip.set{background:oklch(40% 0.07 152);border-color:transparent}
+#send{font:600 1rem system-ui;padding:12px 20px;border:0;background:var(--warn);color:var(--ink);cursor:pointer}
+#send:disabled{opacity:.4;cursor:not-allowed}
+#status{grid-column:1/-1;font:500 .82rem ui-monospace,monospace;min-height:1.2em}
+textarea{width:100%;min-height:80px;font:inherit;padding:10px;border:1.5px solid var(--ink);background:var(--paper)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>QUESTION HEADLINE</h1>
+  <p>One sentence of context: what is being decided and why now.</p>
+  <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+  <p id="meterText" aria-live="polite"></p>
+
+  <form id="form" novalidate>
+    <!-- Repeat this block per decision. -->
+    <section data-key="example" data-label="Example" data-required>
+      <h2>01 · Decision title</h2>
+      <p>What the user is choosing, in their terms.</p>
+      <div class="split">
+        <div>
+          <label class="opt"><input type="radio" name="example" value="a">
+            <div><strong>Option A</strong> — recommended
+              <div class="imp"><div><p><b>Gains:</b> … <b>Costs:</b> …</p></div></div>
+            </div>
+          </label>
+          <label class="opt"><input type="radio" name="example" value="custom">
+            <div><strong>Other</strong> <input data-custom-for="example" placeholder="describe"></div>
+          </label>
+        </div>
+        <figure><!-- SVG figure that changes with the selection --><figcaption>What the figure shows.</figcaption></figure>
+      </div>
+    </section>
+
+    <section data-key="notes-section">
+      <label for="notes"><strong>Notes for the agent (optional)</strong></label>
+      <textarea id="notes"></textarea>
+    </section>
+  </form>
+</div>
+
+<div class="dock"><div class="dock-in">
+  <div id="chips"></div>
+  <button id="send" type="button" disabled>Confirm and send</button>
+  <div id="status" aria-live="polite"></div>
+</div></div>
+
+<script>
+(() => {
+  const token = new URLSearchParams(location.search).get('token');
+  const form = document.getElementById('form');
+  const sections = [...document.querySelectorAll('section[data-key]')].filter(s => form.querySelector(`[name="${s.dataset.key}"]`));
+  const required = sections.filter(s => s.hasAttribute('data-required'));
+  const $ = id => document.getElementById(id);
+
+  function value(key){
+    const checked = [...form.querySelectorAll(`[name="${key}"]:checked`)];
+    if (!checked.length) return undefined;
+    const vals = checked.map(i => i.value === 'custom' ? (form.querySelector(`[data-custom-for="${key}"]`)?.value.trim() || '') : i.value).filter(Boolean);
+    if (!vals.length) return undefined;
+    return checked[0].type === 'checkbox' ? vals : vals[0];
+  }
+  function choices(){ const c = {}; for (const s of sections){ const v = value(s.dataset.key); if (v !== undefined) c[s.dataset.key] = v; } return c; }
+
+  function render(){
+    const c = choices();
+    const n = required.filter(s => c[s.dataset.key] !== undefined).length;
+    $('meter').style.transform = `scaleX(${required.length ? n / required.length : 1})`;
+    $('meterText').textContent = `${n} of ${required.length} required decisions made`;
+    $('chips').innerHTML = sections.map(s => { const v = c[s.dataset.key]; return `<span class="chip ${v !== undefined ? 'set' : ''}">${s.dataset.label || s.dataset.key}: ${v ?? '—'}</span>`; }).join('');
+    $('send').disabled = n < required.length;
+    document.dispatchEvent(new CustomEvent('decisions:change', { detail: c })); // hook for figures
+  }
+
+  form.addEventListener('change', render);
+  form.addEventListener('input', e => { const k = e.target.dataset?.customFor; if (k){ const r = form.querySelector(`[name="${k}"][value="custom"]`); if (r) r.checked = true; render(); } });
+
+  $('send').addEventListener('click', async () => {
+    $('send').disabled = true; $('status').textContent = 'Sending…';
+    try {
+      const r = await fetch('/api/choice', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Decision-Token': token || '' }, body: JSON.stringify({ choices: choices(), notes: ($('notes')?.value || '').trim() }) });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || r.status);
+      form.querySelectorAll('input,textarea').forEach(i => i.disabled = true);
+      $('status').textContent = 'Sent. The agent received your answer; this page can be closed.';
+      if (j.closeWindow) setTimeout(() => window.close(), 1200);
+    } catch (e) {
+      $('status').textContent = 'Could not send: ' + e.message;
+      $('send').disabled = false;
+    }
+  });
+  render();
+})();
+</script>
+</body>
+</html>

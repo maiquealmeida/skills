@@ -33,12 +33,14 @@ Testando a partir de um clone local: `npx skills add . --list`.
 
 | Skill | Descrição |
 | ----- | --------- |
+| [`documente`](skills/documente/SKILL.md) | Cria documentação técnica em PT-BR a partir de uma diretiva com assunto e destino. Usa Markdown por padrão, permite múltiplos arquivos e combina linguagem inspirada no ASD-STE100, tabelas e diagramas Mermaid aplicáveis. |
 | [`session-handoff`](skills/session-handoff/SKILL.md) | Cria ou retoma handoffs entre sessões com agentes de continuidade e verificação: sem argumentos atualiza o ativo ou cria; `--create` força criação, `--update arquivo` atualiza e basename ou path explícito retoma o trabalho. Basename usa o diretório configurado; paths absolutos ou relativos à raiz podem apontar para qualquer diretório. `--prepare` prepara um rascunho em segundo plano quando disponível. |
 | [`gut-bug-triage`](skills/gut-bug-triage/SKILL.md) | Classifica bugs e problemas pela matriz GUT, com critérios adaptados aos objetivos, requisitos e domínio do projeto, evidências, tratamento de incertezas e calculadora em Node puro. |
 | [`statusline`](skills/statusline/SKILL.md) | Status line do Claude Code em Node puro: diretório, branch, modelo, barra de contexto, custo e cotas de 5h/7d. Para você descobrir o quanto gastou antes que a fatura te conte. |
 | [`no-patience-dev-guidelines`](skills/no-patience-dev-guidelines/SKILL.md) | Diretrizes para agentes de código: respeitar o contexto do projeto, simplificar, fazer mudanças cirúrgicas, diagnosticar antes de corrigir, verificar o comportamento solicitado, revisar o próprio trabalho, preservar decisões e comunicar com origem, responsáveis, motivos e evidências. Ou: "para de inventar moda". |
 | [`orca-layout`](skills/orca-layout/SKILL.md) | Abre no Orca um grid de terminais, um por projeto, a partir de um `.orca/layouts/<nome>.layout.json` e sobe tudo em modo dev (macOS, Linux e Windows, em Node puro). Repo sem layout? Ela analisa o código e sugere um. Para você parar de abrir quatro terminais na mão toda manhã. |
 | [`sentry-project`](skills/sentry-project/README.md) | Planeja, integra e consulta Sentry em qualquer repositório Git, com scripts Node, cenários de custo/isolamento e configuração por `.env`, `.env.local` ou ambiente do agente. |
+| [`decision-page`](skills/decision-page/SKILL.md) | Troca perguntas no chat por uma página HTML interativa: opções, implicações, figuras SVG que reagem à escolha e animações. Abre como aba do navegador do Orca (ou no navegador padrão), recebe a escolha de volta na sessão, para o servidor e fecha a aba. Pode virar padrão do projeto via `.agents/project.local.json` + bloco no `AGENTS.md`. Para você decidir vendo o que muda, não lendo um parágrafo. |
 
 ## Plugins
 

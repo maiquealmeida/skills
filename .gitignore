@@ -2,3 +2,5 @@
 node_modules/
 # Tipos que o Claude Code grava ao carregar um plugin de uma pasta
 .claude-plugin/types/
+inbox/
+researches/

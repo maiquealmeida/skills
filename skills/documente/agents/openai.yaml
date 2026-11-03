@@ -1,0 +1,4 @@
+interface:
+  display_name: "documente"
+  short_description: "Documentação técnica PT-BR com tabelas e Mermaid"
+  default_prompt: "Use $documente com a diretiva e o destino que eu informar para criar a documentação técnica em PT-BR."
