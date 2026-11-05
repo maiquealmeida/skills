@@ -41,6 +41,7 @@ Testando a partir de um clone local: `npx skills add . --list`.
 | [`orca-layout`](skills/orca-layout/SKILL.md) | Abre no Orca um grid de terminais, um por projeto, a partir de um `.orca/layouts/<nome>.layout.json` e sobe tudo em modo dev (macOS, Linux e Windows, em Node puro). Repo sem layout? Ela analisa o código e sugere um. Para você parar de abrir quatro terminais na mão toda manhã. |
 | [`sentry-project`](skills/sentry-project/README.md) | Planeja, integra e consulta Sentry em qualquer repositório Git, com scripts Node, cenários de custo/isolamento e configuração por `.env`, `.env.local` ou ambiente do agente. |
 | [`decision-page`](skills/decision-page/SKILL.md) | Troca perguntas no chat por uma página HTML interativa: opções, implicações, figuras SVG que reagem à escolha e animações. Abre como aba do navegador do Orca (ou no navegador padrão), recebe a escolha de volta na sessão, para o servidor e fecha a aba. Pode virar padrão do projeto via `.agents/project.local.json` + bloco no `AGENTS.md`. Para você decidir vendo o que muda, não lendo um parágrafo. |
+| [`memory-system`](skills/memory-system/SKILL.md) | Memória persistente entre sessões em `.agents/memory/`: um índice `MEMORY.md` curto que aponta para arquivos por tópico (usuário, feedback, projeto, referência). Inclui o fluxo `/remember` em `references/`. Vendorizada do [ag-kit](https://github.com/vudovn/ag-kit) (MIT). |
 
 ## Plugins
 

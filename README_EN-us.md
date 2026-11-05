@@ -31,6 +31,7 @@ Local testing from a clone: `npx skills add . --list`.
 | [`orca-layout`](skills/orca-layout/SKILL.md) | Opens a grid of Orca terminal panes, one per project, from a per-repo `.orca/layouts/<name>.layout.json` and starts everything in dev mode (macOS, Linux and Windows, plain Node). No layout yet? It analyzes the repo and proposes one. |
 | [`sentry-project`](skills/sentry-project/README_EN-us.md) | Plans, integrates and inspects Sentry in any Git workspace, with Node API scripts, cost/isolation scenarios and configuration through `.env`, `.env.local` or agent environment settings. |
 | [`decision-page`](skills/decision-page/SKILL.md) | Replaces chat questions with an interactive HTML page: options, implications, SVG figures that react to the selection and animations. Opens as an Orca browser tab (or in the default browser), receives the choice back in the session, stops the server and closes the tab. Can become the project default through `.agents/project.local.json` plus an `AGENTS.md` block. |
+| [`memory-system`](skills/memory-system/SKILL.md) | Persistent cross-session memory in `.agents/memory/`: a short `MEMORY.md` index pointing to topic files (user, feedback, project, reference). Includes the `/remember` workflow under `references/`. Vendored from [ag-kit](https://github.com/vudovn/ag-kit) (MIT). |
 
 ## Plugins
 
