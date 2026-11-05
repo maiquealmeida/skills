@@ -1,7 +1,10 @@
 ---
+name: remember
 description: Save information to persistent memory for cross-session recall. Stores preferences, conventions, decisions, and context.
+version: 1.0.0
+requires_skills: memory-system
+artifact_outputs: memory-entry
 ---
-<!-- Vendored from ag-kit (github.com/vudovn/ag-kit) @ 20a13da6d4414c7c6ae33db050a9c606eaef9f40 :: .agents/workflows/remember.md. MIT (c) vudovn. -->
 
 # /remember — Persistent Memory Management
 
@@ -11,7 +14,7 @@ $ARGUMENTS
 
 ## 🔴 CRITICAL RULES
 
-1. **Load memory-system skill** — Read this skill's `SKILL.md` (`../SKILL.md`) first
+1. **Load memory-system skill** — Read `.agents/skills/memory-system/SKILL.md` first
 2. **Never auto-delete memories** — Always ask user before pruning
 3. **Keep index under 200 lines** — Warn if approaching limit
 4. **Distill, don't copy** — Save insights, not full conversations
