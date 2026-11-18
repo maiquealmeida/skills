@@ -32,6 +32,7 @@ Local testing from a clone: `npx skills add . --list`.
 | [`sentry-project`](skills/sentry-project/README_EN-us.md) | Plans, integrates and inspects Sentry in any Git workspace, with Node API scripts, cost/isolation scenarios and configuration through `.env`, `.env.local` or agent environment settings. |
 | [`decision-page`](skills/decision-page/SKILL.md) | Replaces chat questions with an interactive HTML page: options, implications, SVG figures that react to the selection and animations. Opens as an Orca browser tab (or in the default browser), receives the choice back in the session, stops the server and closes the tab. Can become the project default through `.agents/project.local.json` plus an `AGENTS.md` block. |
 | [`memory-system`](skills/memory-system/SKILL.md) | Persistent cross-session memory in `.agents/memory/`: a short `MEMORY.md` index pointing to topic files (user, feedback, project, reference). Includes the `/remember` workflow under `references/`. Vendored from [ag-kit](https://github.com/vudovn/ag-kit) (MIT). |
+| [`agnostic-skill-transform`](skills/agnostic-skill-transform/SKILL.md) | Moves skills from `.claude/skills/` to `.agents/skills/` (with references, scripts and assets) and leaves an adapter in their place. Runs only via `/agnostic-skill-transform`; with no arguments it offers "All" plus the skills that are not adapters yet. Plain Node. |
 
 ## Plugins
 
